@@ -1,7 +1,7 @@
 /*
  * reservoir_mnist.cpp
  * 
- * Copyright 2015 Nils Schaetti <schaetti@schaetti-desktop>
+ * Copyright 2015 Nils Schaetti <n.schaetti@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
