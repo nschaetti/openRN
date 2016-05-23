@@ -18,7 +18,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  * 
- * 
  */
 
 #include <armadillo>
@@ -454,7 +453,7 @@ void generateY(sp_mat* Yt, int trainLen, int initLen, int outSize, vec resultats
  * @return
  * 
  */
-void generateX(mat* X, int trainLen, int initLen, int lenSize, int inSize, int resSize, sp_mat Win, sp_mat W, mat Wbias, std::string datasetPath, double a)
+void generateX(mat* X, int trainLen, int initLen, int lenSize, int inSize, int resSize, sp_mat Win, sp_mat W, mat Wbias, std::string datasetPath, double a, int decalage)
 {
 	vec x = zeros<vec>(resSize);
 	vec u(inSize);
@@ -463,13 +462,17 @@ void generateX(mat* X, int trainLen, int initLen, int lenSize, int inSize, int r
 	int count = 0;
 	int t = 0;
 	vec xx = zeros<vec>(resSize * lenSize);
+	mat im;
 	
-	for(count = initLen+1; count <= initLen + trainLen; count++)
+	for(count = initLen+1; count <= initLen + trainLen + decalage; count++)
 	{
 		// Load image
-		startTimer();
-		mat im = loadImage(datasetPath + "/images/image_" + std::to_string(count) + ".dat");
-		endTimer(TIME_LOAD_IMAGES);
+		if(count <= initLen + trainLen)
+		{
+			startTimer();
+			im = loadImage(datasetPath + "/images/image_" + std::to_string(count) + ".dat");
+			endTimer(TIME_LOAD_IMAGES);
+		}
 
 		// Foreach column of the matrix
 		startTimer();
@@ -482,7 +485,8 @@ void generateX(mat* X, int trainLen, int initLen, int lenSize, int inSize, int r
 			x = (1-a)*x + a*tanh(Win*u + W*x + Wbias);
 			
 			// Put states in super-state
-			X->submat(resSize*k, t, resSize*k+resSize-1, t) = x;
+			if(t >= decalage)
+				X->submat(resSize*k, t-decalage, resSize*k+resSize-1, t-decalage) = x;
 		}
 		
 		// Next step
@@ -542,15 +546,6 @@ void generateShortcuts(mat* XXt, mat* YXt, int trainLen, int initLen, int lenSiz
 			xx.subvec(resSize*k, resSize*k+resSize-1) = x;
 		}
 		endTimer(TIME_COMPUTE_STATES);
-		
-		// Compute tensor product
-		/*startTimer();
-		mat k_xx = kron(xx,xx.t());
-		endTimer(TIME_COMPUTE_TENSOR_PRODUCT);
-		// Add to XX^t
-		startTimer();
-		*XXt += k_xx;
-		endTimer(TIME_COMPUTE_XXT);*/
 		
 		startTimer();
 		#pragma omp parallel for private(i,j) schedule(dynamic)
@@ -931,6 +926,7 @@ int main(int argc, char *argv[])
 	mat Wout;
 	int threadid=0;											// id of thread
 	int nthreads=0;											// number of thread available
+	int decalage=0;
 	
 	// Arguments variables
 	int c;													// Argument
@@ -950,7 +946,8 @@ int main(int argc, char *argv[])
 		{"input-sparsity", 1, 0, 'r'},
 		{"reservoir-sparsity", 1, 0, 'y'},
 		{"xxt-shortcut", 0, 0, 'x'},
-		{"use-solve", 0, 0, 'd'}
+		{"use-solve", 0, 0, 'd'},
+		{"decalage", 1, 0, 'g'}
 	};
 	std::string option;
 	
@@ -961,7 +958,7 @@ int main(int argc, char *argv[])
 	int outSize = 10;										// Numner of outputs
 	
 	// Foreach arguments
-	while((c = getopt_long(argc, argv, "t:e:i:s:n:i:s:o:p:a:l:b:c:r:y:dxhv", long_options, &option_index)) != -1)
+	while((c = getopt_long(argc, argv, "t:e:i:s:n:i:s:o:p:a:l:b:c:r:y:g:dxhv", long_options, &option_index)) != -1)
 	{
 		switch(c)
 		{
@@ -1045,6 +1042,11 @@ int main(int argc, char *argv[])
 				{
 					use_solve = 1;
 				}
+				// Decalage
+				else if(option == "decalage")
+				{
+					decalage = atoi(optarg);
+				}
 				break;
 			// Training length
 			case 't':
@@ -1109,6 +1111,10 @@ int main(int argc, char *argv[])
 			// XXt shortcut
 			case 'x':
 				xxt_shortcut = true;
+				break;
+			// Decalage
+			case 'g':
+				decalage = atoi(optarg);
 				break;
 			default:
 				usage(argv[0]);
@@ -1205,7 +1211,7 @@ int main(int argc, char *argv[])
 	{
 		printfi("INFO","Computing reservoir states...");
 		X = zeros<mat>(resSize * lenSize, trainLen);
-		generateX(&X, trainLen, initLen, lenSize, inSize, resSize, Win, W, Wbias, datasetPath, a);
+		generateX(&X, trainLen, initLen, lenSize, inSize, resSize, Win, W, Wbias, datasetPath, a, decalage);
 		printfi("INFO","\n");
 		printfm(&X, "X");
 	}
