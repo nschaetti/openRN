@@ -12,5 +12,8 @@ joined_reservoir: $(OBJ)
 	mkdir -p $(BIN)
 	$(CC) -o $(BIN)/$@ $< $(CPPFLAGS)
 
+install:
+	cp $(BIN)/* /bin
+
 clean:
 	rm *.o
