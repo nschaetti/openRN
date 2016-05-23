@@ -9,7 +9,7 @@ all: joined_reservoir
 	$(CC) -c -o $@ $< $(CPPFLAGS)
 
 joined_reservoir: $(OBJ)
-	mkdir $(BIN)
+	mkdir -p $(BIN)
 	$(CC) -o $(BIN)/$@ $< $(CPPFLAGS)
 
 clean:
