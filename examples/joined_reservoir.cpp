@@ -21,7 +21,6 @@
  * 
  */
 
-
 #include <armadillo>
 #include <stdlib.h>
 #include <stdio.h>
