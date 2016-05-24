@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
- * reservoir_mnist.cpp
+ * mnistool.py
  * 
  * Copyright 2015 Nils Schaetti <n.schaetti@gmail.com>
  * 
