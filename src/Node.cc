@@ -1,5 +1,5 @@
 /*
- * openRN.h
+ * Node.cc
  * 
  * Copyright 2015 Nils Schaetti <n.schaetti@gmail.com>
  * 
@@ -19,3 +19,15 @@
  * MA 02110-1301, USA.
  * 
  */
+
+#include "includes/Node.h"
+
+class Node
+{
+	
+	Node(void)
+	{
+		
+	}
+	
+};

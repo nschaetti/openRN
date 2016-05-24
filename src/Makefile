@@ -133,7 +133,7 @@ am__installdirs = "$(DESTDIR)$(libdir)" \
 	"$(DESTDIR)$(openrnincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libopenrn_la_LIBADD =
-am_libopenrn_la_OBJECTS = libopenrn_la-main.lo
+am_libopenrn_la_OBJECTS = libopenrn_la-main.lo libopenrn_la-Node.lo
 libopenrn_la_OBJECTS = $(am_libopenrn_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -329,13 +329,13 @@ top_srcdir = ..
 
 # Binary
 lib_LTLIBRARIES = libopenrn.la
-libopenrn_la_SOURCES = main.cc
+libopenrn_la_SOURCES = main.cc Node.cc
 libopenrn_la_CFLAGS = -fPIC
 libopenrn_la_CPPFLAGS = -fPIC
 libopenrn_la_CXXFLAGS = -fPIC
 libopenrn_la_LDFLAGS = -shared -fPIC
 openrnincludedir = $(includedir)/openRN
-openrninclude_HEADERS = includes/openRN.h
+openrninclude_HEADERS = includes/openRN.h includes/Node.h
 all: all-am
 
 .SUFFIXES:
@@ -414,6 +414,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+include ./$(DEPDIR)/libopenrn_la-Node.Plo
 include ./$(DEPDIR)/libopenrn_la-main.Plo
 
 .cc.o:
@@ -443,6 +444,13 @@ libopenrn_la-main.lo: main.cc
 #	$(AM_V_CXX)source='main.cc' object='libopenrn_la-main.lo' libtool=yes \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopenrn_la_CPPFLAGS) $(CPPFLAGS) $(libopenrn_la_CXXFLAGS) $(CXXFLAGS) -c -o libopenrn_la-main.lo `test -f 'main.cc' || echo '$(srcdir)/'`main.cc
+
+libopenrn_la-Node.lo: Node.cc
+	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopenrn_la_CPPFLAGS) $(CPPFLAGS) $(libopenrn_la_CXXFLAGS) $(CXXFLAGS) -MT libopenrn_la-Node.lo -MD -MP -MF $(DEPDIR)/libopenrn_la-Node.Tpo -c -o libopenrn_la-Node.lo `test -f 'Node.cc' || echo '$(srcdir)/'`Node.cc
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libopenrn_la-Node.Tpo $(DEPDIR)/libopenrn_la-Node.Plo
+#	$(AM_V_CXX)source='Node.cc' object='libopenrn_la-Node.lo' libtool=yes \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopenrn_la_CPPFLAGS) $(CPPFLAGS) $(libopenrn_la_CXXFLAGS) $(CXXFLAGS) -c -o libopenrn_la-Node.lo `test -f 'Node.cc' || echo '$(srcdir)/'`Node.cc
 
 mostlyclean-libtool:
 	-rm -f *.lo
