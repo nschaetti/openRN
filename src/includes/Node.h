@@ -37,7 +37,7 @@ namespace openRN
 	* \brief Basic node class
 	*
 	* This is the basic class for a node
-	*/
+	*/ 
 	class Node
 	{
 	/**** PUBLIC ****/
