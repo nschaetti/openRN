@@ -27,9 +27,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import matplotlib.cm as cm
 import numpy as np
-import Oger
 import pylab as pyl
-import mdp
 import os
 import cPickle
 import struct
